@@ -6,6 +6,8 @@
     using Filters;
     using Logging;
     using System.Linq;
+    using Outline;
+    using Outline.Destinations;
 
     /// <summary>
     /// Merges PDF documents into each other.
@@ -136,6 +138,9 @@
             var maxVersion = files.Select(x=>x.Version).Max();
             using (var document = new PdfDocumentBuilder(output, false, PdfWriterType.Default, maxVersion))
             {
+                var bookmarks = new List<BookmarkNode>();
+                var pageInBookmarks = 1;
+
                 document.ArchiveStandard = archiveStandard;
                 if (docInfoBuilder != null) 
                 {
@@ -164,6 +169,28 @@
                             document.AddPage(existing, i);
                         }
                     }
+                    
+                    var title = !string.IsNullOrEmpty(existing.Information.Title)
+                        ? existing.Information.Title
+                        : $"Document {fileIndex + 1}";
+
+                    bookmarks.Add(new DocumentBookmarkNode(
+                        title,
+                        fileIndex,
+                        new ExplicitDestination(
+                            pageInBookmarks,
+                            ExplicitDestinationType.XyzCoordinates,
+                            new ExplicitDestinationCoordinates(0, (decimal)existing.GetPage(1).Height)
+                        ),
+                        new List<BookmarkNode>()
+                    ));
+
+                    pageInBookmarks += existing.NumberOfPages;
+                }
+                
+                if (bookmarks.Count > 0)
+                {
+                    document.Bookmarks = new Bookmarks(bookmarks);
                 }
             }
         }
