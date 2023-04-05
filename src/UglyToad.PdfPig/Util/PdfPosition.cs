@@ -1,5 +1,7 @@
-﻿namespace UglyToad.PdfPig.Util
+namespace UglyToad.PdfPig.Util
 {
+    using System;
+    using System.Drawing;
     using Core;
 
     /// <summary>
@@ -36,7 +38,7 @@
         /// <summary>
         /// Page size in unit
         /// </summary>
-        public PdfRectangle PageSize { get; }
+        public Size PageSize { get; }
 
         internal static double ScaleFactor = 1;
 
@@ -64,7 +66,11 @@
         public PdfPosition(UnitOfMeasure unitOfMeasure, PdfRectangle pageSize, bool calculateFromTop)
         {
             ScaleFactor = unitInPoints[(int)unitOfMeasure];
-            PageSize = new PdfRectangle(0, 0, pageSize.Width / ScaleFactor, pageSize.Height / ScaleFactor);
+            PageSize = new Size(
+                (int)Math.Round(pageSize.Width / ScaleFactor, 0),
+                (int)Math.Round(pageSize.Height / ScaleFactor, 0)
+            );
+            //PageSize = new PdfRectangle(0, 0, pageSize.Width / ScaleFactor, pageSize.Height / ScaleFactor);
             PageSizeInPoint = pageSize;
             CalculateFromTop = calculateFromTop;
         }
@@ -83,7 +89,7 @@
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public PdfPoint this[decimal x, decimal y] => ToPoint(x, y);
+        public PdfPoint this[decimal x, decimal y] => ToPoint((double)x, (double)y);
 
         /// <summary>
         /// Create a new <see cref="PdfPoint"/> at this position.
@@ -94,11 +100,40 @@
         public PdfPoint this[double x, double y] => ToPoint(x, y);
 
         /// <summary>
+        /// Create a new <see cref="PdfPoint"/> at this position.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public PdfPoint this[float x, float y] => ToPoint(x, y);
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public Dimension this[decimal a] => new Dimension(a);
+        public SizeF this[int a] => new SizeF(ToWidth(a), ToHeight(a));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <returns></returns>
+        public SizeF this[decimal a] => new SizeF(ToWidth((float)a), ToHeight((float)a));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <returns></returns>
+        public SizeF this[double a] => new SizeF(ToWidth((float)a), ToHeight((float)a));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <returns></returns>
+        public SizeF this[float a] => new SizeF(ToWidth(a), ToHeight(a));
 
         /// <summary>
         /// Create a new <see cref="PdfPoint"/> at this position.
@@ -106,37 +141,7 @@
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public PdfPoint ToPoint(int x, int y)
-        {
-            if (CalculateFromTop)
-            {
-                return new PdfPoint(x * ScaleFactor, PageSizeInPoint.Height - y * ScaleFactor);
-            }
-            return new PdfPoint(x * ScaleFactor, y * ScaleFactor);
-        }
-
-        /// <summary>
-        /// Create a new <see cref="PdfPoint"/> at this position.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public PdfPoint ToPoint(decimal x, decimal y)
-        {
-            if (CalculateFromTop)
-            {
-                return new PdfPoint((double)x * ScaleFactor, PageSizeInPoint.Height - (double)y * ScaleFactor);
-            }
-            return new PdfPoint((double)x * ScaleFactor, (double)y * ScaleFactor);
-        }
-
-        /// <summary>
-        /// Create a new <see cref="PdfPoint"/> at this position.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public PdfPoint ToPoint(double x, double y)
+        private PdfPoint ToPoint(double x, double y)
         {
             if (CalculateFromTop)
             {
@@ -150,13 +155,13 @@
         /// </summary>
         /// <param name="height"></param>
         /// <returns></returns>
-        internal static decimal ToHeight(decimal height)
+        private static float ToHeight(float height)
         {
             if (CalculateFromTop)
             {
-                return -height * (decimal)ScaleFactor;
+                return -height * (float)ScaleFactor;
             }
-            return height * (decimal)ScaleFactor;
+            return height * (float)ScaleFactor;
         }
 
         /// <summary>
@@ -164,35 +169,9 @@
         /// </summary>
         /// <param name="width"></param>
         /// <returns></returns>
-        internal static decimal ToWidth(decimal width)
+        private static float ToWidth(float width)
         {
-            return width * (decimal)ScaleFactor;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public struct Dimension
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            public decimal Height;
-
-            /// <summary>
-            /// 
-            /// </summary>
-            public decimal Width;
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="value"></param>
-            public Dimension(decimal value)
-            {
-                Width = ToWidth(value);
-                Height = ToHeight(value);
-            }
+            return width * (float)ScaleFactor;
         }
     }
 }
