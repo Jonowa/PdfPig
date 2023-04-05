@@ -133,6 +133,17 @@
         /// <param name="from">The first point on the line.</param>
         /// <param name="to">The last point on the line.</param>
         /// <param name="lineWidth">The width of the line in user space units.</param>
+        public PdfPageBuilder DrawLine(PdfPoint from, PdfPoint to, int lineWidth)
+        {
+            return DrawLine(from, to, (decimal)lineWidth);
+        }
+
+        /// <summary>
+        /// Draws a line on the current page between two points with the specified line width.
+        /// </summary>
+        /// <param name="from">The first point on the line.</param>
+        /// <param name="to">The last point on the line.</param>
+        /// <param name="lineWidth">The width of the line in user space units.</param>
         public PdfPageBuilder DrawLine(PdfPoint from, PdfPoint to, float lineWidth)
         {
             return DrawLine(from, to, (decimal)lineWidth);
