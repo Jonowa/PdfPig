@@ -133,7 +133,7 @@
         /// <param name="from">The first point on the line.</param>
         /// <param name="to">The last point on the line.</param>
         /// <param name="lineWidth">The width of the line in user space units.</param>
-        public PdfPageBuilder DrawLine(PdfPoint from, PdfPoint to, float lineWidth = 1)
+        public PdfPageBuilder DrawLine(PdfPoint from, PdfPoint to, float lineWidth)
         {
             return DrawLine(from, to, (decimal)lineWidth);
         }
@@ -171,7 +171,20 @@
         /// <param name="height">The height of the rectangle.</param>
         /// <param name="lineWidth">The width of the line border of the rectangle.</param>
         /// <param name="fill">Whether to fill with the color set by <see cref="SetTextAndFillColor"/>.</param>
-        public PdfPageBuilder DrawRectangle(PdfPoint position, float width, float height, float lineWidth = 1, bool fill = false)
+        public PdfPageBuilder DrawRectangle(PdfPoint position, float width, float height, int lineWidth, bool fill = false)
+        {
+            return DrawRectangle(position, (decimal)width, (decimal)height, (decimal)lineWidth, fill);
+        }
+
+        /// <summary>
+        /// Draws a rectangle on the current page starting at the specified point with the given width, height and line width.
+        /// </summary>
+        /// <param name="position">The position of the rectangle, for positive width and height this is the bottom-left corner.</param>
+        /// <param name="width">The width of the rectangle.</param>
+        /// <param name="height">The height of the rectangle.</param>
+        /// <param name="lineWidth">The width of the line border of the rectangle.</param>
+        /// <param name="fill">Whether to fill with the color set by <see cref="SetTextAndFillColor"/>.</param>
+        public PdfPageBuilder DrawRectangle(PdfPoint position, float width, float height, float lineWidth, bool fill = false)
         {
             return DrawRectangle(position, (decimal)width, (decimal)height, (decimal)lineWidth, fill);
         }
@@ -227,7 +240,20 @@
         /// <param name="point3">Position of the third corner of the triangle.</param>
         /// <param name="lineWidth">The width of the line border of the triangle.</param>
         /// <param name="fill">Whether to fill with the color set by <see cref="SetTextAndFillColor"/>.</param>
-        public PdfPageBuilder DrawTriangle(PdfPoint point1, PdfPoint point2, PdfPoint point3, float lineWidth = 1, bool fill = false)
+        public PdfPageBuilder DrawTriangle(PdfPoint point1, PdfPoint point2, PdfPoint point3, int lineWidth, bool fill = false)
+        {
+            return DrawTriangle(point1, point2, point3, (decimal)lineWidth, fill);
+        }
+
+        /// <summary>
+        /// Draws a triangle on the current page with the specified points and line width.
+        /// </summary>
+        /// <param name="point1">Position of the first corner of the triangle.</param>
+        /// <param name="point2">Position of the second corner of the triangle.</param>
+        /// <param name="point3">Position of the third corner of the triangle.</param>
+        /// <param name="lineWidth">The width of the line border of the triangle.</param>
+        /// <param name="fill">Whether to fill with the color set by <see cref="SetTextAndFillColor"/>.</param>
+        public PdfPageBuilder DrawTriangle(PdfPoint point1, PdfPoint point2, PdfPoint point3, float lineWidth, bool fill = false)
         {
             return DrawTriangle(point1, point2, point3, (decimal)lineWidth, fill);
         }
@@ -276,7 +302,19 @@
         /// <param name="diameter">The diameter of the circle.</param>
         /// <param name="lineWidth">The width of the line border of the circle.</param>
         /// <param name="fill">Whether to fill with the color set by <see cref="SetTextAndFillColor"/>.</param>
-        public PdfPageBuilder DrawCircle(PdfPoint center, float diameter, float lineWidth = 1, bool fill = false)
+        public PdfPageBuilder DrawCircle(PdfPoint center, float diameter, int lineWidth, bool fill = false)
+        {
+            return DrawEllipsis(center, diameter, diameter, lineWidth, fill);
+        }
+
+        /// <summary>
+        /// Draws a circle on the current page centering at the specified point with the given diameter and line width.
+        /// </summary>
+        /// <param name="center">The center position of the circle.</param>
+        /// <param name="diameter">The diameter of the circle.</param>
+        /// <param name="lineWidth">The width of the line border of the circle.</param>
+        /// <param name="fill">Whether to fill with the color set by <see cref="SetTextAndFillColor"/>.</param>
+        public PdfPageBuilder DrawCircle(PdfPoint center, float diameter, float lineWidth, bool fill = false)
         {
             return DrawEllipsis(center, diameter, diameter, lineWidth, fill);
         }
@@ -303,7 +341,20 @@
         /// <param name="height">The height of the ellipsis.</param>
         /// <param name="lineWidth">The width of the line border of the ellipsis.</param>
         /// <param name="fill">Whether to fill with the color set by <see cref="SetTextAndFillColor"/>.</param>
-        public PdfPageBuilder DrawEllipsis(PdfPoint center, float width, float height, float lineWidth = 1, bool fill = false)
+        public PdfPageBuilder DrawEllipsis(PdfPoint center, float width, float height, int lineWidth, bool fill = false)
+        {
+            return DrawEllipsis(center, (decimal)width, (decimal)height, (decimal)lineWidth, fill);
+        }
+
+        /// <summary>
+        /// Draws an ellipsis on the current page centering at the specified point with the given width, height and line width.
+        /// </summary>
+        /// <param name="center">The center position of the ellipsis.</param>
+        /// <param name="width">The width of the ellipsis.</param>
+        /// <param name="height">The height of the ellipsis.</param>
+        /// <param name="lineWidth">The width of the line border of the ellipsis.</param>
+        /// <param name="fill">Whether to fill with the color set by <see cref="SetTextAndFillColor"/>.</param>
+        public PdfPageBuilder DrawEllipsis(PdfPoint center, float width, float height, float lineWidth, bool fill = false)
         {
             return DrawEllipsis(center, (decimal)width, (decimal)height, (decimal)lineWidth, fill);
         }
