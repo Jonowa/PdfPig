@@ -541,6 +541,23 @@
         /// <returns>The letters from the input text with their corresponding size and position.</returns>
         public IReadOnlyList<Letter> AddText(string text, decimal fontSize, PdfPoint position, PdfDocumentBuilder.AddedFont font)
         {
+            return AddText(text, TextAlign.Left, fontSize, position, font);
+        }
+
+        /// <summary>
+        /// Draws the text in the provided font at the specified position and returns the letters which will be drawn. 
+        /// </summary>
+        /// <param name="text">The text to draw to the page.</param>
+        /// <param name="textAlign">Horizontal text alignment.</param>
+        /// <param name="fontSize">The size of the font in user space units.</param>
+        /// <param name="position">The position of the baseline (lower-left corner) to start drawing the text from.</param>
+        /// <param name="font">
+        /// A font added to the document using <see cref="PdfDocumentBuilder.AddTrueTypeFont"/>
+        /// or <see cref="PdfDocumentBuilder.AddStandard14Font"/> methods.
+        /// </param> 
+        /// <returns>The letters from the input text with their corresponding size and position.</returns>
+        public IReadOnlyList<Letter> AddText(string text, TextAlign textAlign, decimal fontSize, PdfPoint position, PdfDocumentBuilder.AddedFont font)
+        {
             if (font == null)
             {
                 throw new ArgumentNullException(nameof(font));
@@ -572,9 +589,22 @@
 
             var letters = DrawLetters(fontName, text, fontProgram, fm, fontSize, textMatrix);
 
+            var offset = 0m;
+            switch (textAlign)
+            {
+                case TextAlign.Center:
+                    offset = (decimal)letters[letters.Count - 1].Width / 2;
+                    break;
+
+                case TextAlign.End:
+                case TextAlign.Right:
+                    offset = (decimal)letters[letters.Count - 1].Width;
+                    break;
+            }
+
             currentStream.Add(BeginText.Value);
             currentStream.Add(new SetFontAndSize(fontName, fontSize));
-            currentStream.Add(new MoveToNextLineWithOffset((decimal)position.X, (decimal)position.Y));
+            currentStream.Add(new MoveToNextLineWithOffset((decimal)position.X - offset, (decimal)position.Y));
             var bytesPerShow = new List<byte>();
             foreach (var letter in text)
             {
